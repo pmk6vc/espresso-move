@@ -3,7 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "npx nx run-many -t build"
+    "build": "npx nx run-many -t build",
+    "format:check": "npx nx format:check",
+    "format:write": "npx nx format:write",
+    "start": "npx nx run-many -t start",
+    "test": "npx nx run-many -t test"
   },
   "private": true,
   "devDependencies": {

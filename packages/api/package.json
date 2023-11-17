@@ -5,12 +5,15 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@espresso-move/utils": "*",
     "express": "^4.18.2"
   }
 }
