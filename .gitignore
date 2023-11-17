@@ -1,15 +1,18 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# compiled output
-dist
+# IntelliJ
+/.idea
+.DS_Store
+
+# nx
+.nx/cache
+
+# TypeScript
+next-env.d.ts
 
 # dependencies
 node_modules
 
-# IDEs and editors
-/.idea
-
-# System Files
-.DS_Store
-
-.nx/cache
+# compiled output
+dist
+.next
