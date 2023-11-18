@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "format:check": "npx nx format:check",
-    "format:write": "npx nx format:write",
+    "prettier:check": "npx nx format:check",
+    "prettier:write": "npx nx format:write",
     "build": "npx nx run-many -t build",
     "start:dev": "npx nx run-many -t start:dev",
     "test": "npx nx run-many -t test"
@@ -15,6 +15,7 @@
     "@types/express": "^4.17.21",
     "nx": "17.1.2",
     "prettier": "^3.1.0",
+    "prettier-plugin-organize-imports": "^3.2.4",
     "typescript": "^5.2.2"
   },
   "workspaces": [
