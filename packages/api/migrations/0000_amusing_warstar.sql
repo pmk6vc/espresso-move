@@ -67,13 +67,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "auth"."user_organization_role" ADD CONSTRAINT "user_organization_role_uid_user_uid_fk" FOREIGN KEY ("uid") REFERENCES "auth"."user"("uid") ON DELETE restrict ON UPDATE cascade;
+ ALTER TABLE "auth"."user_organization_role" ADD CONSTRAINT "user_organization_role_uid_user_uid_fk" FOREIGN KEY ("uid") REFERENCES "entity"."user"("uid") ON DELETE restrict ON UPDATE cascade;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "auth"."user_organization_role" ADD CONSTRAINT "user_organization_role_organization_id_organization_id_fk" FOREIGN KEY ("organization_id") REFERENCES "auth"."organization"("id") ON DELETE restrict ON UPDATE cascade;
+ ALTER TABLE "auth"."user_organization_role" ADD CONSTRAINT "user_organization_role_organization_id_organization_id_fk" FOREIGN KEY ("organization_id") REFERENCES "entity"."organization"("id") ON DELETE restrict ON UPDATE cascade;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
