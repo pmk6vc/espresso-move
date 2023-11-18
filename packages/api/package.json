@@ -14,5 +14,8 @@
   "dependencies": {
     "@espresso-move/utils": "*",
     "express": "^4.18.2"
+  },
+  "nx": {
+    "tags": ["scope:api"]
   }
 }
