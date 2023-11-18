@@ -9,6 +9,7 @@
     "prestart": "npm run build",
     "start": "node .",
     "start-dev": "firebase emulators:exec --project gcp-test-project-id --ui \"nodemon src/index.ts\"",
+    "emulators-start": "firebase emulators:start --project gcp-test-project-id",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
