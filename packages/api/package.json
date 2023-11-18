@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "npx eslint --ignore-path ../../.gitignore .",
     "build": "tsc",
-    "start:dev": "nodemon src/index.ts",
+    "start-dev": "nodemon src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -25,6 +25,7 @@
     "@typescript-eslint/eslint-plugin": "^6.11.0",
     "@typescript-eslint/parser": "^6.11.0",
     "eslint": "^8.54.0",
+    "nodemon": "^3.0.1",
     "typescript": "^5.2.2"
   }
 }
