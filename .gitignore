@@ -16,3 +16,8 @@ node_modules
 # compiled output
 dist
 .next
+
+# Testing
+coverage
+firebase-debug.log
+ui-debug.log
