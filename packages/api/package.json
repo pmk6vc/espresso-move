@@ -11,8 +11,8 @@
     "start-dev": "firebase emulators:exec --project gcp-test-project-id --ui \"nodemon src/index.ts\"",
     "emulators-start": "firebase emulators:start --project gcp-test-project-id",
     "test": "firebase emulators:exec --project gcp-test-project-id \"jest --detectOpenHandles\"",
-    "migrations:generate": "drizzle-kit generate:pg",
-    "migrations:drop": "drizzle-kit drop"
+    "migrations-generate": "drizzle-kit generate:pg",
+    "migrations-drop": "drizzle-kit drop"
   },
   "keywords": [],
   "author": "",
