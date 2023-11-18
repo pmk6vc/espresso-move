@@ -5,12 +5,15 @@
   "main": "dist/index.js",
   "scripts": {
     "lint": "npx eslint --ignore-path ../../.gitignore .",
+    "prebuild": "npm run lint",
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node .",
     "start-dev": "firebase emulators:exec --project gcp-test-project-id --ui \"nodemon src/index.ts\"",
+    "start-docker": "docker-compose --env-file .env/app.env --env-file .env/db.env up --build",
     "emulators-start": "firebase emulators:start --project gcp-test-project-id",
     "test": "firebase emulators:exec --project gcp-test-project-id \"jest --detectOpenHandles\"",
+    "test-ci": "firebase emulators:exec --project gcp-test-project-id \"jest --ci --verbose --no-cache\"",
     "migrations-generate": "drizzle-kit generate:pg",
     "migrations-drop": "drizzle-kit drop"
   },
