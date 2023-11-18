@@ -3,6 +3,7 @@
   "plugins": ["@typescript-eslint", "@nx"],
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "rules": {
+    "@typescript-eslint/no-non-null-assertion": 0,
     "@nx/enforce-module-boundaries": [
       "error",
       {
