@@ -30,7 +30,8 @@ services:
   app:
     image: express-movers-docker:latest
     build:
-      context: .
+      context: ../../
+      dockerfile: ./packages/api/Dockerfile
       args:
         - SERVICE_PORT=$SERVICE_PORT
     ports:
