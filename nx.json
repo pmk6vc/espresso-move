@@ -6,9 +6,6 @@
       "cache": true,
       "dependsOn": ["^build"]
     },
-    "start:dev": {
-      "dependsOn": ["build"]
-    },
     "lint": {
       "cache": true
     },
