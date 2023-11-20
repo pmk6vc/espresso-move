@@ -1,4 +1,5 @@
 ## TODO
 
 - Deploy Github Actions
-- Orchestrate full stack with docker-compose
+- Update client to vanilla React
+- Update root docker-compose to write client and server

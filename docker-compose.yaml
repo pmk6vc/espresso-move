@@ -1,5 +1,5 @@
 version: "3"
 
+# TODO: Use this approach to wire the backend API in the client docker-compose, and then just trigger client from monorepo root
 include:
   - path: ./packages/api/docker-compose.yaml
-
