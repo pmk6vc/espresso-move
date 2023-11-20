@@ -8,7 +8,8 @@
     "lint": "npx nx run-many -t lint",
     "build": "npx nx run-many -t build",
     "start-dev": "npx nx run-many -t start-dev",
-    "test": "npx nx run-many -t test"
+    "test": "npx nx run-many -t test",
+    "prepare": "husky install"
   },
   "private": true,
   "devDependencies": {
@@ -22,7 +23,8 @@
     "nx": "17.1.2",
     "prettier": "^3.1.0",
     "prettier-plugin-organize-imports": "^3.2.4",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "husky": "^8.0.0"
   },
   "workspaces": [
     "packages/*"
