@@ -1,6 +1,5 @@
-version: "3.9"
+version: "3"
 
-# Inject env vars at runtime by entering 'docker-compose up [--detach] [--force-recreate] [--renew-anon-volumes]'
 services:
   postgres-db:
     image: "postgres:15-alpine"
@@ -16,6 +15,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    env_file: .environment/db.env
 
   firebase-emulator:
     build:
@@ -52,3 +52,6 @@ services:
       - DB_PASSWORD=${POSTGRES_PASSWORD}
       - GCP_PROJECT_ID=${GCP_TEST_PROJECT_ID}
       - FIREBASE_AUTH_EMULATOR_HOST=firebase-emulator:9099
+    env_file:
+      - .environment/app.env
+      - .environment/db.env

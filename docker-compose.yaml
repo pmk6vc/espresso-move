@@ -1,0 +1,5 @@
+version: "3"
+
+include:
+  - path: ./packages/api/docker-compose.yaml
+

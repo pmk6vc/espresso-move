@@ -3,4 +3,5 @@
 .next
 dist
 node_modules
+docker-compose.yaml
 README.md
