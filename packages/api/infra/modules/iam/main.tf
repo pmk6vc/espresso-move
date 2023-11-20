@@ -25,7 +25,7 @@ module "oidc" {
   sa_mapping = {
     (google_service_account.service_account.account_id) = {
       sa_name = google_service_account.service_account.name
-      attribute = "attribute.repository/pmk6vc/express-movers"
+      attribute = "attribute.repository/pmk6vc"
     }
   }
 }
