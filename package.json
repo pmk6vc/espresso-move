@@ -8,8 +8,7 @@
     "lint": "npx nx run-many -t lint",
     "build": "npx nx run-many -t build",
     "start-dev": "npx nx run-many -t start-dev",
-    "test": "npx nx run-many -t test",
-    "prepare": "husky install"
+    "test": "npx nx run-many -t test"
   },
   "private": true,
   "devDependencies": {
