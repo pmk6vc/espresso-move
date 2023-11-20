@@ -1,3 +1,4 @@
+import helloWorld from "@espresso-move/utils";
 import express from "express";
 import HealthChecksRouter from "./api/HealthChecksRouter";
 import UserRouter from "./api/UserRouter";
@@ -5,6 +6,8 @@ import DatabaseClient from "./db/DatabaseClient";
 import { Environment } from "./environment/handlers/IEnvironment";
 import authenticateUser from "./middleware/AuthenticateUser";
 import correlatedRequestLogging from "./middleware/CorrelatedRequestLogging";
+
+helloWorld();
 
 const app = express();
 export const buildApp = async (env: Environment, dbClient: DatabaseClient) => {
@@ -19,7 +22,7 @@ export const buildApp = async (env: Environment, dbClient: DatabaseClient) => {
   // Attach routers in order of evaluation
   app.use(
     "/_health",
-    new HealthChecksRouter(dbClient, env.logger).buildRouter()
+    new HealthChecksRouter(dbClient, env.logger).buildRouter(),
   );
   app.use("/users", new UserRouter(dbClient, env.logger).buildRouter());
 
