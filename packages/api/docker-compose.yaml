@@ -1,6 +1,5 @@
-version: "3.9"
+version: "3"
 
-# Inject env vars at runtime by entering 'docker-compose up [--detach] [--force-recreate] [--renew-anon-volumes]'
 services:
   postgres-db:
     image: "postgres:15-alpine"
