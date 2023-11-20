@@ -5,6 +5,9 @@ import DatabaseClient from "./db/DatabaseClient";
 import { Environment } from "./environment/handlers/IEnvironment";
 import authenticateUser from "./middleware/AuthenticateUser";
 import correlatedRequestLogging from "./middleware/CorrelatedRequestLogging";
+import helloWorld from "@espresso-move/utils"
+
+helloWorld()
 
 const app = express();
 export const buildApp = async (env: Environment, dbClient: DatabaseClient) => {

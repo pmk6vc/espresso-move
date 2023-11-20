@@ -7,8 +7,12 @@ WORKDIR /app/packages/api
 RUN npm install
 RUN npm run build
 
-# Copy built app code and install production dependencies
+# Copy shared utils
 FROM node:18-alpine
+WORKDIR /
+COPY packages/utils ./utils
+
+# Copy built app code and install production dependencies
 WORKDIR /app
 COPY --from=builder ./app/packages/api/dist ./dist
 COPY packages/api/package.json .
