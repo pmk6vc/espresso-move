@@ -1,0 +1,200 @@
+name: Deploy main branch to production env
+
+on:
+  push:
+    branches: [main]
+
+env:
+  TF_WORKSPACE_NAME: production
+  TF_WORKING_DIR_API: packages/api/infra
+  SERVICE_NAME: espresso-move-api
+  SERVICE_PORT: 5000
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.17.1 # Based on version found in Dockerfile
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run test suite
+        run: npm run test-ci
+
+  terraform-api:
+    # Note - can specify environment key and inject env-specific values if necessary later
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      ARTIFACT_REPO_NAME: ${{ steps.repo.outputs.artifact_repo }}
+      DB_INSTANCE_NAME: ${{ steps.db.outputs.db_instance }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Use keyless authentication to authenticate remaining actions
+      # This obviously assumes that the service account, IAM roles, and OIDC pools / providers have already been created prior to running pipeline
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/managed-pool/providers/managed-pool-gh-provider
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: Initialize Terraform
+        working-directory: ${{ env.TF_WORKING_DIR_API }}
+        run: terraform init
+
+      - name: Select Terraform workspace
+        working-directory: ${{ env.TF_WORKING_DIR_API }}
+        run: terraform workspace select $TF_WORKSPACE_NAME
+
+      - name: Apply Terraform resources
+        working-directory: ${{ env.TF_WORKING_DIR_API }}
+        run: terraform apply -auto-approve
+        env:
+          TF_VAR_gcp_project_id: ${{ vars.GCP_PROJECT_ID }}
+          TF_VAR_region: ${{ vars.GCP_REGION }}
+          TF_VAR_service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}
+          TF_VAR_db_username_secret: ${{ vars.DB_USERNAME_SECRET }}
+          TF_VAR_db_username_secret_version: ${{ vars.DB_USERNAME_SECRET_VERSION }}
+          TF_VAR_db_password_secret: ${{ vars.DB_PASSWORD_SECRET }}
+          TF_VAR_db_password_secret_version: ${{ vars.DB_PASSWORD_SECRET_VERSION }}
+
+      - name: Fetch artifact registry repo name
+        id: repo
+        working-directory: ${{ env.TF_WORKING_DIR_API }}
+        run: echo "artifact_repo=$(terraform output artifact_registry_repo | tr -d '"')" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch database instance name
+        id: db
+        working-directory: ${{ env.TF_WORKING_DIR_API }}
+        run: echo "db_instance=$(terraform output db_connection_name | tr -d '"')" >> "$GITHUB_OUTPUT"
+
+  clean-registry:
+    # Note - can specify environment key and inject env-specific values if necessary later
+    needs: terraform-api
+    runs-on: ubuntu-latest
+    outputs:
+      REGISTRY_IMAGE_NAME: ${{ steps.image_name.outputs.IMAGE_NAME }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get registry image name
+        id: image_name
+        run: echo "IMAGE_NAME=${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}" >> $GITHUB_OUTPUT
+        env:
+          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
+
+      - name: Authenticate to Google Cloud
+        id: gcp_auth
+        uses: google-github-actions/auth@v1
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/managed-pool/providers/managed-pool-gh-provider
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v1.1.0
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+
+      - name: Delete images in registry
+        run: |
+          if [[ $(gcloud artifacts docker images list ${{ env.IMAGE }}) ]]; then
+            echo "At least one version of ${{ env.IMAGE }} version found - deleting"
+            gcloud artifacts docker images delete ${{ env.IMAGE }}
+          else
+            echo "${{ env.IMAGE }} not found - nothing to delete"
+          fi
+        env:
+          IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
+
+  deploy-api:
+    # Note - can specify environment key and inject env-specific values if necessary later
+    needs: [ test, terraform-api, clean-registry ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        id: gcp_auth
+        uses: google-github-actions/auth@v1
+        with:
+          token_format: access_token
+          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/managed-pool/providers/managed-pool-gh-provider
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT_ID }}@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Authorize Docker to push to registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ vars.GCP_REGION }}-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.gcp_auth.outputs.access_token }}
+
+      - name: Build and push Docker image to registry
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          build-args: |
+            SERVICE_PORT=${{ env.SERVICE_PORT }}
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
+          push: true
+        env:
+          IMAGE: ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }}
+
+      # Authenticated service by default - will need to make public for the first deployment
+      - name: Deploy
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v1.0.1
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ vars.GCP_REGION }}
+          image: ${{ env.IMAGE }}:${{ github.sha }}
+          flags: |
+            --min-instances=0
+            --max-instances=1
+            --memory=512Mi
+            --cpu=1
+            --port=${{ env.SERVICE_PORT }}
+            --add-cloudsql-instances=${{ env.DB_INSTANCE_NAME }}
+            --update-secrets=DB_USERNAME=${{ vars.DB_USERNAME_SECRET }}:${{ vars.DB_USERNAME_SECRET_VERSION }},DB_PASSWORD=${{ vars.DB_PASSWORD_SECRET }}:${{ vars.DB_PASSWORD_SECRET_VERSION }}
+            --allow-unauthenticated
+          env_vars: |
+            NODE_ENV=production
+            NODE_CONFIG_ENV=production
+            DB_NAME=postgres
+            DB_HOST=/cloudsql/${{ env.DB_INSTANCE_NAME }}
+            DB_PORT=5432
+            GCP_PROJECT_ID=${{ vars.GCP_PROJECT_ID }}
+        env:
+          IMAGE: ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }}
+          DB_INSTANCE_NAME: ${{ needs.terraform.outputs.DB_INSTANCE_NAME }}
+
+      - name: Show URL
+        run: echo ${{ steps.deploy.outputs.url }}
