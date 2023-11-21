@@ -157,7 +157,7 @@ jobs:
       - name: Authorize Docker to push to registry
         run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev
 
-      - name: Build and push Docker image to registry
+      - name: Build Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -169,9 +169,11 @@ jobs:
             ${{ env.SERVICE_NAME }}:${{ github.sha }}
             ${{ env.IMAGE }}:latest
             ${{ env.IMAGE }}:${{ github.sha }}
-          push: true
         env:
           IMAGE: ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }}
+
+      - name: Push Docker image to Artifact Registry
+        run: docker push ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }} --all-tags
 
       # Authenticated service by default - will need to make public for the first deployment
       - name: Deploy
