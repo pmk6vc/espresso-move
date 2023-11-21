@@ -103,7 +103,7 @@ jobs:
         id: image_name
         run: echo "IMAGE_NAME=${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO_NAME }}/${{ env.SERVICE_NAME }}" >> $GITHUB_OUTPUT
         env:
-          ARTIFACT_REPO_NAME: ${{ needs.terraform.outputs.ARTIFACT_REPO_NAME }}
+          ARTIFACT_REPO_NAME: ${{ needs.terraform-api.outputs.ARTIFACT_REPO_NAME }}
 
       - name: Authenticate to Google Cloud
         id: gcp_auth
@@ -164,6 +164,8 @@ jobs:
           build-args: |
             SERVICE_PORT=${{ env.SERVICE_PORT }}
           tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
             ${{ env.SERVICE_NAME }}:${{ github.sha }}
             ${{ env.SERVICE_NAME }}:latest
           push: true
