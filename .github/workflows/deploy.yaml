@@ -164,8 +164,6 @@ jobs:
           build-args: |
             SERVICE_PORT=${{ env.SERVICE_PORT }}
           tags: |
-            ${{ env.IMAGE }}:${{ github.sha }}
-            ${{ env.IMAGE }}:latest
             ${{ env.SERVICE_NAME }}:${{ github.sha }}
             ${{ env.SERVICE_NAME }}:latest
           push: true
