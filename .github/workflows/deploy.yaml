@@ -159,6 +159,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
+          file: packages/api/Dockerfile
           build-args: |
             SERVICE_PORT=${{ env.SERVICE_PORT }}
           tags: |
