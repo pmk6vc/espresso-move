@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prettier:check": "npx nx format:check",
-    "prettier:write": "npx nx format:write",
+    "prettier-check": "npx nx format:check",
+    "prettier-write": "npx nx format:write",
     "lint": "npx nx run-many -t lint",
     "build": "npx nx run-many -t build",
     "start-dev": "npx nx run-many -t start-dev",
