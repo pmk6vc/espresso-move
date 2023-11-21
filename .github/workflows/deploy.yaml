@@ -201,7 +201,7 @@ jobs:
             GCP_PROJECT_ID=${{ vars.GCP_PROJECT_ID }}
         env:
           IMAGE: ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }}
-          DB_INSTANCE_NAME: ${{ needs.terraform.outputs.DB_INSTANCE_NAME }}
+          DB_INSTANCE_NAME: ${{ needs.terraform-api.outputs.DB_INSTANCE_NAME }}
 
       - name: Show URL
         run: echo ${{ steps.deploy.outputs.url }}
