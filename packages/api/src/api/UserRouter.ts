@@ -39,7 +39,7 @@ export default class UserRouter extends AbstractRouter {
     if (maybeUser.length > 0) {
       this.logger.info(
         `User ${authenticatedUserRecord.uid} already exists in database`,
-        res.locals[GLOBAL_LOG_OBJ]
+        res.locals[GLOBAL_LOG_OBJ],
       );
       res.status(409).send("User already exists");
       return;
@@ -55,7 +55,7 @@ export default class UserRouter extends AbstractRouter {
     await this.dbClient.pgPoolClient.insert(userTableDef).values(newCustomer);
     this.logger.info(
       `User ${authenticatedUserRecord.uid} successfully written to database`,
-      res.locals[GLOBAL_LOG_OBJ]
+      res.locals[GLOBAL_LOG_OBJ],
     );
     return res
       .status(201)
@@ -68,7 +68,7 @@ export default class UserRouter extends AbstractRouter {
     if (parsedRequestParams.userId != authenticatedUserRecord.uid) {
       this.logger.info(
         `Authenticated user ${authenticatedUserRecord.uid} does not match requested user ${parsedRequestParams.userId}`,
-        res.locals[GLOBAL_LOG_OBJ]
+        res.locals[GLOBAL_LOG_OBJ],
       );
       res.status(403).send("Unauthorized request");
       return;
@@ -84,13 +84,13 @@ export default class UserRouter extends AbstractRouter {
         "/newUser",
         requireAuthenticatedUser(this.logger),
         validateRequestBody(this.newUserRequestSchema),
-        this.newUser
+        this.newUser,
       )
       .get(
         "/:userId",
         requireAuthenticatedUser(this.logger),
         validateRequestParams(this.getUserRequestSchema),
-        this.getUser
+        this.getUser,
       );
   }
 }

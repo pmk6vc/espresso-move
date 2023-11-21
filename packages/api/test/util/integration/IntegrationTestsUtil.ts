@@ -13,9 +13,8 @@ import { ITestUser } from "./ITestUser";
 import App = app.App;
 
 async function setupDefaultUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
-  const userRecord = await getAuth(firebaseAdminApp).createUser(
-    DEFAULT_TEST_USER
-  );
+  const userRecord =
+    await getAuth(firebaseAdminApp).createUser(DEFAULT_TEST_USER);
   return [
     {
       userCredentials: {
@@ -37,8 +36,8 @@ function connectToFirebaseEmulator() {
 
 export async function setupIntegrationTest(
   setupUsers: (
-    firebaseAdminApp: App
-  ) => Promise<ITestUser[]> = setupDefaultUsers
+    firebaseAdminApp: App,
+  ) => Promise<ITestUser[]> = setupDefaultUsers,
 ) {
   const firebaseAdminApp = connectToFirebaseEmulator();
   const env = await EnvironmentFactory.getHandler().getEnvironment();
@@ -51,9 +50,9 @@ export async function setupIntegrationTest(
 
 export async function tearDownIntegrationTest(
   firebaseAdminApp: App,
-  testUsers: ITestUser[]
+  testUsers: ITestUser[],
 ) {
   await getAuth(firebaseAdminApp).deleteUsers(
-    testUsers.map((u) => u.userRecord.uid)
+    testUsers.map((u) => u.userRecord.uid),
   );
 }

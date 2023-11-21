@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "prettier:check": "npx nx format:check",
-    "prettier:write": "npx nx format:write",
+    "prettier-check": "npx nx run-many -t prettier-check",
+    "prettier-write": "npx nx run-many -t prettier-write",
     "lint": "npx nx run-many -t lint",
+    "test": "npx nx run-many -t test",
+    "test-ci": "npx nx run-many -t test-ci",
     "build": "npx nx run-many -t build",
     "start-dev": "npx nx run-many -t start-dev",
-    "start-docker": "docker-compose up --build",
-    "test": "npx nx run-many -t test"
+    "start-docker": "docker-compose up --build"
   },
   "private": true,
   "devDependencies": {

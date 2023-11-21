@@ -31,7 +31,7 @@ describe("require authentication middleware should work", () => {
     await requireAuthenticatedUser(env.logger)(
       mockRequest,
       mockResponse,
-      nextFunction
+      nextFunction,
     );
     expect(mockResponse.status).toHaveBeenCalledWith(401);
     expect(mockResponse.status).toHaveBeenCalledTimes(1);
@@ -45,7 +45,7 @@ describe("require authentication middleware should work", () => {
     await requireAuthenticatedUser(env.logger)(
       mockRequest,
       mockResponse,
-      nextFunction
+      nextFunction,
     );
     expect(mockResponse.status).toHaveBeenCalledTimes(0);
     expect(mockResponse.send).toHaveBeenCalledTimes(0);
