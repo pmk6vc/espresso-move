@@ -122,6 +122,7 @@ CICD
 * Assign the role required to manage workload identity pool resources
 * Needs to be applied before this service account can be used to manage workload identity pools for GitHub Actions auth
 */
+# TODO: Prove this works by updating the name of the OIDC instance
 resource "google_project_iam_member" "workload_identity_pools_admin" {
   project = var.gcp_project_id
   role    = "roles/iam.workloadIdentityPoolAdmin"

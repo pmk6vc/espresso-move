@@ -9,7 +9,7 @@ env:
   TF_WORKING_DIR_API: packages/api/infra
 
 jobs:
-  terraform:
+  terraform-api:
     # Note - can specify environment key and inject env-specific values if necessary later
     runs-on: ubuntu-latest
     permissions:
