@@ -5,7 +5,7 @@ import { getAuth } from "firebase-admin/auth";
 export const USER_PROPERTY = "user";
 
 async function fetchUserRecordFromBearerString(
-  bearerString: string | undefined
+  bearerString: string | undefined,
 ) {
   if (!bearerString) {
     return;
@@ -24,10 +24,10 @@ async function fetchUserRecordFromBearerString(
 const authenticateUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   res.locals[USER_PROPERTY] = await fetchUserRecordFromBearerString(
-    req.headers.authorization
+    req.headers.authorization,
   );
   next();
 };

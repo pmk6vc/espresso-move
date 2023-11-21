@@ -2,7 +2,7 @@ import { pgEnum } from "drizzle-orm/pg-core";
 
 export function convertStringEnumsToPgEnum(
   pgEnumName: string,
-  stringEnums: object[]
+  stringEnums: object[],
 ) {
   const enumValues: string[] = [];
   stringEnums.map((e) => {

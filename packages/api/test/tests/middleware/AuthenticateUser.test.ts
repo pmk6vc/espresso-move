@@ -31,9 +31,8 @@ describe("authentication middleware should work", () => {
   const USER_PROPERTY_KEY = USER_PROPERTY as keyof typeof mockResponse.locals;
 
   async function setupUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
-    const userRecord = await getAuth(firebaseAdminApp).createUser(
-      FIRST_TEST_USER
-    );
+    const userRecord =
+      await getAuth(firebaseAdminApp).createUser(FIRST_TEST_USER);
     const user = {
       userRecord: userRecord,
       userCredentials: {
@@ -70,7 +69,7 @@ describe("authentication middleware should work", () => {
     await authenticateUser(
       mockRequest as Request,
       mockResponse as Response,
-      nextFunction
+      nextFunction,
     );
     expect(mockResponse.locals[USER_PROPERTY_KEY]).toBe(undefined);
     expect(nextFunction).toBeCalledTimes(1);
@@ -85,7 +84,7 @@ describe("authentication middleware should work", () => {
     await authenticateUser(
       mockRequest as Request,
       mockResponse as Response,
-      nextFunction
+      nextFunction,
     );
     expect(mockResponse.locals[USER_PROPERTY_KEY]).toBe(undefined);
     expect(nextFunction).toBeCalledTimes(1);
@@ -95,7 +94,7 @@ describe("authentication middleware should work", () => {
     const testUser = testUsers[0];
     const bearerToken = await getIdTokenWithEmailPassword(
       testUser.userCredentials.email,
-      testUser.userCredentials.password
+      testUser.userCredentials.password,
     );
     mockRequest = {
       headers: {
@@ -105,16 +104,16 @@ describe("authentication middleware should work", () => {
     await authenticateUser(
       mockRequest as Request,
       mockResponse as Response,
-      nextFunction
+      nextFunction,
     );
 
     const testUserRecord = testUser.userRecord.toJSON();
     const returnedUserRecord = mockResponse.locals[USER_PROPERTY_KEY];
     expect(returnedUserRecord["uid"]).toBe(
-      testUserRecord["uid" as keyof typeof testUserRecord]
+      testUserRecord["uid" as keyof typeof testUserRecord],
     );
     expect(returnedUserRecord["email"]).toBe(
-      testUserRecord["email" as keyof typeof testUserRecord]
+      testUserRecord["email" as keyof typeof testUserRecord],
     );
     expect(nextFunction).toBeCalledTimes(1);
   });

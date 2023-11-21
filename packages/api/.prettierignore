@@ -1,0 +1,16 @@
+.env
+.git
+.github
+.idea
+coverage
+dist
+infra
+migrations
+node_modules
+public
+.dockerignore
+.eslintignore
+.gitignore
+docker-compose.yaml
+Dockerfile
+README.md

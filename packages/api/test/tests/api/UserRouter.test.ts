@@ -33,9 +33,8 @@ describe("user routes should work", () => {
   let testUsers: ITestUser[];
 
   async function setupUsers(firebaseAdminApp: App): Promise<ITestUser[]> {
-    const firstUserRecord = await getAuth(firebaseAdminApp).createUser(
-      FIRST_TEST_USER
-    );
+    const firstUserRecord =
+      await getAuth(firebaseAdminApp).createUser(FIRST_TEST_USER);
     const firstUser = {
       userRecord: firstUserRecord,
       userCredentials: {
@@ -45,9 +44,8 @@ describe("user routes should work", () => {
       profile: FIRST_TEST_USER.profile,
     };
 
-    const secondUserRecord = await getAuth(firebaseAdminApp).createUser(
-      SECOND_TEST_USER
-    );
+    const secondUserRecord =
+      await getAuth(firebaseAdminApp).createUser(SECOND_TEST_USER);
     const secondUser = {
       userRecord: secondUserRecord,
       userCredentials: {
@@ -87,7 +85,7 @@ describe("user routes should work", () => {
     const newUserHelper = async (user: ITestUser) => {
       const bearerToken = await getIdTokenWithEmailPassword(
         user.userCredentials.email,
-        user.userCredentials.password
+        user.userCredentials.password,
       );
       const requestBody = {
         email: user.userCredentials.email,
@@ -188,7 +186,7 @@ describe("user routes should work", () => {
       const secondUserCredentials = testUsers[1].userCredentials;
       const secondUserToken = await getIdTokenWithEmailPassword(
         secondUserCredentials.email,
-        secondUserCredentials.password
+        secondUserCredentials.password,
       );
       const res = await request(expressApp)
         .get(`${ROUTE_PREFIX}/${firstUserId}`)
@@ -201,7 +199,7 @@ describe("user routes should work", () => {
       const user = testUsers[0];
       const bearerToken = await getIdTokenWithEmailPassword(
         user.userCredentials.email,
-        user.userCredentials.password
+        user.userCredentials.password,
       );
       const res = await request(expressApp)
         .get(`${ROUTE_PREFIX}/${user.userRecord.uid}`)
