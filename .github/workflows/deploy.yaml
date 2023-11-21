@@ -163,7 +163,9 @@ jobs:
           file: packages/api/Dockerfile
           build-args: |
             SERVICE_PORT=${{ env.SERVICE_PORT }}
-          tags: ${{ env.IMAGE }}:latest
+          tags: |
+            ${{ env.SERVICE_NAME }}:${{ github.sha }}
+            ${{ env.SERVICE_NAME }}:latest
           push: true
         env:
           IMAGE: ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }}
