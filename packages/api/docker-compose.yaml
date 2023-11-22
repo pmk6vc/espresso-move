@@ -27,7 +27,7 @@ services:
       - "4000:4000"
 
   app:
-    image: express-movers-docker:latest
+    image: espresso-move-api:latest
     build:
       context: ../../
       dockerfile: ./packages/api/Dockerfile
