@@ -10,7 +10,6 @@ env:
 
 jobs:
   terraform-api:
-    # Note - can specify environment key and inject env-specific values if necessary later
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,8 +18,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Use keyless authentication to authenticate remaining actions
-      # This obviously assumes that the service account, IAM roles, and OIDC pools / providers have already been created prior to running pipeline
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
