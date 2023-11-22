@@ -1,16 +1,27 @@
-# First stage: build distribution
+# Generate builds
 FROM node:18-alpine AS builder
 WORKDIR /app
+
+# Root installations
 COPY . .
 RUN npm install
+
+# Shared utils build
+WORKDIR /app/packages/utils
+RUN npm install
+RUN npm run build
+
+# API build
 WORKDIR /app/packages/api
 RUN npm install
 RUN npm run build
 
-# Copy shared utils
+# Copy shared utils build and install production dependencies
 FROM node:18-alpine
-WORKDIR /
-COPY packages/utils ./utils
+WORKDIR /utils
+COPY --from=builder ./app/packages/utils/dist ./dist
+COPY packages/utils/package.json .
+RUN npm install --production
 
 # Copy built app code and install production dependencies
 WORKDIR /app

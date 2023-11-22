@@ -167,8 +167,6 @@ jobs:
           tags: |
             ${{ env.SERVICE_NAME }}:latest
             ${{ env.SERVICE_NAME }}:${{ github.sha }}
-            ${{ env.IMAGE }}:latest
-            ${{ env.IMAGE }}:${{ github.sha }}
         env:
           IMAGE: ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }}
 
