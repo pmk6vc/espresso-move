@@ -29,8 +29,7 @@ jobs:
         run: npm run test-ci
 
   terraform-api:
-    # Note - can specify environment key and inject env-specific values if necessary later
-#    needs: test
+    needs: test
     runs-on: ubuntu-latest
     outputs:
       ARTIFACT_REPO_NAME: ${{ steps.repo.outputs.artifact_repo }}
@@ -42,8 +41,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Use keyless authentication to authenticate remaining actions
-      # This obviously assumes that the service account, IAM roles, and OIDC pools / providers have already been created prior to running pipeline
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
@@ -87,7 +84,6 @@ jobs:
         run: echo "db_instance=$(terraform output db_connection_name | tr -d '"')" >> "$GITHUB_OUTPUT"
 
   clean-registry:
-    # Note - can specify environment key and inject env-specific values if necessary later
     needs: terraform-api
     runs-on: ubuntu-latest
     outputs:
@@ -130,9 +126,7 @@ jobs:
           IMAGE: ${{ steps.image_name.outputs.IMAGE_NAME }}
 
   deploy-api:
-    # Note - can specify environment key and inject env-specific values if necessary later
-#    needs: [ test, terraform-api, clean-registry ]
-    needs: [ terraform-api, clean-registry ]
+    needs: [ test, terraform-api, clean-registry ]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -173,7 +167,7 @@ jobs:
       - name: Push Docker image to Artifact Registry
         run: docker push ${{ needs.clean-registry.outputs.REGISTRY_IMAGE_NAME }} --all-tags
 
-      # Authenticated service by default - will need to make public for the first deployment
+      # Authenticated service by default - will need to manually make public for the first deployment
       - name: Deploy
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v1.0.1
